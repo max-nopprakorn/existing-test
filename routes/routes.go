@@ -2,6 +2,8 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
+
+	hostelHanlder "github.com/existing-test/internal/hostel"
 )
 
 func Routes(router *gin.Engine) {
@@ -9,9 +11,9 @@ func Routes(router *gin.Engine) {
 
 	hostel := router.Group("/hostels")
 	{
-		hostel.GET("/", hostelHanlder.GetHostels)
-		hostel.GET("/:hostelID", hostelHanlder.GetHostelById)
-		hostel.POST("/", hostelHanlder.CreateHostel)
+		hostel.GET("/", hostelHanlder.GetHostelsHandler)
+		hostel.GET("/:hostelID", hostelHanlder.GetHostelByIdHandler)
+		hostel.POST("/", hostelHanlder.CreateHostelHandler)
 	}
 
 	user := router.Group("/user")

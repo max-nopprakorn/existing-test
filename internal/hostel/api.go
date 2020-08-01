@@ -1,91 +1,67 @@
 package hostel
 
 import (
-	"context"
-	"log"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var collection *mongo.Collection
-
-func HostelCollection(c *mongo.Database) {
-	collection = c.Collection("hostel")
-}
-
-func GetHostels(c *gin.Context) {
-	hostels := []Hostel{}
-	cursor, err := collection.Find(context.TODO(), bson.M{})
-
+// GetHostelsHandler is the handler for query all hostels.
+func GetHostelsHandler(c *gin.Context) {
+	hostels, err := getHostels()
 	if err != nil {
-		log.Printf("Error while getting all hostels because of %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "something went wrong.",
-		})
-	}
-
-	for cursor.Next(context.TODO()) {
-		var hostel Hostel
-		cursor.Decode(&hostel)
-		hostels = append(hostels, hostel)
-	}
-
-	c.JSON(http.StatusOK, hostels)
-}
-
-func GetHostelById(c *gin.Context) {
-	hostelId := c.Param("hostelID")
-	hostel := Hostel{}
-	err := collection.FindOne(context.TODO(), bson.M{"id": hostelId}).Decode(&hostel)
-	if err != nil {
-		log.Printf("Error while getting a hostel becase of %v", err)
-		c.JSON(http.StatusNotFound, gin.H{
-			"message": "Resource not found",
+		c.JSON(500, gin.H{
+			"mesaage": "Something went wrong when trying to query all hostels.",
 		})
 		return
+	}
+
+	c.JSON(200, hostels)
+}
+
+// GetHostelByIdHandler is the handler for query a hostel by id.
+func GetHostelByIdHandler(c *gin.Context) {
+	hostelID := c.Param("hostelId")
+	hostel, err := GetHostelById(hostelID)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"message": "Something went wrong when trying to query a hostel.",
+		})
+		return
+	}
+	if hostel == (&Hostel{}) {
+		c.JSON(404, gin.H{
+			"message": "Resource not found.",
+		})
 	}
 
 	c.JSON(200, hostel)
 }
 
-func CreateHostel(c *gin.Context) {
+// CreateHostelHandler is the handler for create a new hostel.
+func CreateHostelHandler(c *gin.Context) {
 	var hostel Hostel
 	err := c.ShouldBindJSON(&hostel)
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, "Invalid json provided")
+		c.JSON(422, gin.H{
+			"message": "Invald json request.",
+		})
 		return
 	}
+
 	name := hostel.Name
 
-	newHostel := Hostel{
-		ID:   uuid.New().String(),
-		Name: name,
-	}
+	isExists := CheckIfHostelExists(name)
 
-	var existed Hostel
-	doc := collection.FindOne(context.TODO(), bson.M{"name": name})
-	doc.Decode(&existed)
-
-	if existed != (Hostel{}) {
+	if isExists {
 		c.JSON(409, gin.H{
-			"message": "Name already exists.",
+			"message": "Hostel name already exists.",
 		})
-		return
 	}
 
-	_, err = collection.InsertOne(context.TODO(), newHostel)
+	err = CreateHostel(hostel)
 
 	if err != nil {
-		log.Printf("Error while inserting hostel because of %v", err)
 		c.JSON(500, gin.H{
-			"message": "somethign went wrong",
+			"message": "Something went wrong when creating hostel.",
 		})
-		return
 	}
-	c.JSON(http.StatusCreated, newHostel)
-	return
 }
