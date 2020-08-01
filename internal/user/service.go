@@ -17,6 +17,7 @@ func UserCollection(c *mongo.Database) {
 	userColleciton = c.Collection("user")
 }
 
+// BookingCollection is the database connection for booking collection
 func BookingCollection(c *mongo.Database) {
 	bookingCollection = c.Collection("booking")
 }
@@ -69,9 +70,9 @@ func getBookings(userID string) ([]Booking, error) {
 	return bookings, nil
 }
 
-func getBookingDetail(bookingId string) (*Booking, error) {
+func getBookingDetail(bookingID string) (*Booking, error) {
 	booking := Booking{}
-	err := bookingCollection.FindOne(context.TODO(), bson.M{"id": bookingId}).Decode(&booking)
+	err := bookingCollection.FindOne(context.TODO(), bson.M{"id": bookingID}).Decode(&booking)
 	if err != nil {
 		log.Printf("Error while getting a booking information.")
 		return nil, err

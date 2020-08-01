@@ -1,5 +1,6 @@
 package user
 
+// User stores user information
 type User struct {
 	ID       string `json:"id"`
 	Username string `json:"username"`
@@ -8,6 +9,7 @@ type User struct {
 	Lastname string `json:"lastname"`
 }
 
+// Booking stores booking information
 type Booking struct {
 	ID       string `json:"id"`
 	UserID   string `json:"userId"`

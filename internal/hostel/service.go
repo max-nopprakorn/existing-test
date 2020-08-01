@@ -92,6 +92,7 @@ func checkIfDuplicate(name string) bool {
 	return false
 }
 
+// BookHostel will set the hostel to unavailable
 func BookHostel(hostelID string) error {
 	booked := bson.M{
 		"$set": bson.M{
@@ -109,6 +110,7 @@ func BookHostel(hostelID string) error {
 	return nil
 }
 
+// CheckIfAvaliable will check if hostel is available or not
 func CheckIfAvaliable(hostelID string) bool {
 	var hostel Hostel
 	collection.FindOne(context.TODO(), bson.M{"id": hostelID}).Decode(&hostel)

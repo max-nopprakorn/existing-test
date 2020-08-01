@@ -8,7 +8,7 @@ import (
 func GetHostelsHandler(c *gin.Context) {
 	hostels, err := getHostels()
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.AbortWithStatusJSON(500, gin.H{
 			"mesaage": "Something went wrong when trying to query all hostels.",
 		})
 		return
@@ -22,15 +22,16 @@ func GetHostelByIDHandler(c *gin.Context) {
 	hostelID := c.Param("hostelId")
 	hostel, err := getHostelByID(hostelID)
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.AbortWithStatusJSON(500, gin.H{
 			"message": "Something went wrong when trying to query a hostel.",
 		})
 		return
 	}
 	if hostel == (&Hostel{}) {
-		c.JSON(404, gin.H{
+		c.AbortWithStatusJSON(404, gin.H{
 			"message": "Resource not found.",
 		})
+		return
 	}
 
 	c.JSON(200, hostel)
@@ -41,7 +42,7 @@ func CreateHostelHandler(c *gin.Context) {
 	var hostel Hostel
 	err := c.ShouldBindJSON(&hostel)
 	if err != nil {
-		c.JSON(422, gin.H{
+		c.AbortWithStatusJSON(422, gin.H{
 			"message": "Invald json request.",
 		})
 		return
@@ -52,17 +53,19 @@ func CreateHostelHandler(c *gin.Context) {
 	isExists := checkIfDuplicate(name)
 
 	if isExists {
-		c.JSON(409, gin.H{
+		c.AbortWithStatusJSON(409, gin.H{
 			"message": "Hostel name already exists.",
 		})
+		return
 	}
 
 	err = createHostel(hostel)
 
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.AbortWithStatusJSON(500, gin.H{
 			"message": "Something went wrong when creating hostel.",
 		})
+		return
 	}
 
 	c.JSON(201, gin.H{
@@ -70,10 +73,11 @@ func CreateHostelHandler(c *gin.Context) {
 	})
 }
 
+// GetAvailableHostelsHandler will return only available hostels.
 func GetAvailableHostelsHandler(c *gin.Context) {
 	availableHostels, err := getAvailableHostels()
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.AbortWithStatusJSON(500, gin.H{
 			"mesaage": "Something went wrong when trying to query available hostels.",
 		})
 		return
