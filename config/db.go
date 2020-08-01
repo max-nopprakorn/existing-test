@@ -11,6 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
+// Connect the database
 func Connect() {
 	// Database Config
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
@@ -30,6 +31,6 @@ func Connect() {
 		log.Println("Connected!")
 	}
 	db := client.Database("hostel")
-	hostel.HostelCollection(db)
+	hostel.Collection(db)
 
 }

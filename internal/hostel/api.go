@@ -17,10 +17,10 @@ func GetHostelsHandler(c *gin.Context) {
 	c.JSON(200, hostels)
 }
 
-// GetHostelByIdHandler is the handler for query a hostel by id.
-func GetHostelByIdHandler(c *gin.Context) {
+// GetHostelByIDHandler is the handler for query a hostel by id.
+func GetHostelByIDHandler(c *gin.Context) {
 	hostelID := c.Param("hostelId")
-	hostel, err := GetHostelById(hostelID)
+	hostel, err := getHostelById(hostelID)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"message": "Something went wrong when trying to query a hostel.",
@@ -49,7 +49,7 @@ func CreateHostelHandler(c *gin.Context) {
 
 	name := hostel.Name
 
-	isExists := CheckIfHostelExists(name)
+	isExists := checkIfHostelExists(name)
 
 	if isExists {
 		c.JSON(409, gin.H{
@@ -57,7 +57,7 @@ func CreateHostelHandler(c *gin.Context) {
 		})
 	}
 
-	err = CreateHostel(hostel)
+	err = createHostel(hostel)
 
 	if err != nil {
 		c.JSON(500, gin.H{

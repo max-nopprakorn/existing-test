@@ -12,18 +12,18 @@ func Routes(router *gin.Engine) {
 	hostel := router.Group("/hostels")
 	{
 		hostel.GET("/", hostelHanlder.GetHostelsHandler)
-		hostel.GET("/:hostelID", hostelHanlder.GetHostelByIdHandler)
+		hostel.GET("/:hostelID", hostelHanlder.GetHostelByIDHandler)
 		hostel.POST("/", hostelHanlder.CreateHostelHandler)
 	}
 
-	user := router.Group("/user")
-	{
-		user.GET("/:userId", userHandler.GetUserById)
-		user.GET("/:userId/bookings", userHandler.GetBookings)
-		user.GET("/:userId/bookings/:bookingId", userHandler.GetBookingInfo)
-	}
+	// user := router.Group("/user")
+	// {
+	// 	user.GET("/:userId", userHandler.GetUserById)
+	// 	user.GET("/:userId/bookings", userHandler.GetBookings)
+	// 	user.GET("/:userId/bookings/:bookingId", userHandler.GetBookingInfo)
+	// }
 
-	router.POST("/register", authHandler.Register)
-	router.POST("/login", authHandler.Login)
+	// router.POST("/register", authHandler.Register)
+	// router.POST("/login", authHandler.Login)
 
 }

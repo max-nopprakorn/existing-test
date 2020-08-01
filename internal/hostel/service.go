@@ -11,7 +11,8 @@ import (
 
 var collection *mongo.Collection
 
-func HostelCollection(c *mongo.Database) {
+// Collection is the database connection for hostel colleciton
+func Collection(c *mongo.Database) {
 	collection = c.Collection("hostel")
 }
 
@@ -33,7 +34,7 @@ func getHostels() ([]Hostel, error) {
 	return hostels, nil
 }
 
-func GetHostelById(hostelId string) (*Hostel, error) {
+func getHostelById(hostelId string) (*Hostel, error) {
 	hostel := Hostel{}
 	err := collection.FindOne(context.TODO(), bson.M{"id": hostelId}).Decode(&hostel)
 	if err != nil {
@@ -44,7 +45,7 @@ func GetHostelById(hostelId string) (*Hostel, error) {
 	return &hostel, nil
 }
 
-func CreateHostel(hostel Hostel) error {
+func createHostel(hostel Hostel) error {
 
 	name := hostel.Name
 
@@ -63,7 +64,7 @@ func CreateHostel(hostel Hostel) error {
 	return nil
 }
 
-func CheckIfHostelExists(name string) bool {
+func checkIfHostelExists(name string) bool {
 	var existed Hostel
 	doc := collection.FindOne(context.TODO(), bson.M{"name": name})
 	doc.Decode(&existed)
