@@ -28,5 +28,11 @@ func Routes(router *gin.Engine) {
 
 	// router.POST("/register", authHandler.Register)
 	// router.POST("/login", authHandler.Login)
+	router.NoRoute(noRoute)
 
+}
+func noRoute(c *gin.Context) {
+	c.AbortWithStatusJSON(404, gin.H{
+		"message": "Path not found.",
+	})
 }
