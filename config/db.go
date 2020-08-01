@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/existing-test/internal/hostel"
+	"github.com/existing-test/internal/user"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -32,5 +33,6 @@ func Connect() {
 	}
 	db := client.Database("hostel")
 	hostel.Collection(db)
-
+	user.UserCollection(db)
+	user.BookingCollection(db)
 }

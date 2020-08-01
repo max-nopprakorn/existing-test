@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	hostelHanlder "github.com/existing-test/internal/hostel"
+	userHandler "github.com/existing-test/internal/user"
 )
 
 func Routes(router *gin.Engine) {
@@ -16,12 +17,14 @@ func Routes(router *gin.Engine) {
 		hostel.POST("/", hostelHanlder.CreateHostelHandler)
 	}
 
-	// user := router.Group("/user")
-	// {
-	// 	user.GET("/:userId", userHandler.GetUserById)
-	// 	user.GET("/:userId/bookings", userHandler.GetBookings)
-	// 	user.GET("/:userId/bookings/:bookingId", userHandler.GetBookingInfo)
-	// }
+	user := router.Group("/user")
+	{
+		user.GET("/:userId", userHandler.GetUserDetailHandler)
+		user.GET("/:userId/bookings", userHandler.GetBookingsHandler)
+		user.GET("/:userId/bookings/:bookingId", userHandler.GetBookingDetailHandler)
+	}
+
+	router.POST("/book", userHandler.BookHostelHandler)
 
 	// router.POST("/register", authHandler.Register)
 	// router.POST("/login", authHandler.Login)

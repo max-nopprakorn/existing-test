@@ -7,3 +7,9 @@ type User struct {
 	Name     string `json:"name"`
 	Lastname string `json:"lastname"`
 }
+
+type Booking struct {
+	ID       string `json:"id"`
+	UserID   string `json:"userId"`
+	HostelID string `json:"hostelId"`
+}

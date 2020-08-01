@@ -34,9 +34,27 @@ func getHostels() ([]Hostel, error) {
 	return hostels, nil
 }
 
-func getHostelById(hostelId string) (*Hostel, error) {
+func getAvailableHostels() ([]Hostel, error) {
+	availableHostels := []Hostel{}
+	cursor, err := collection.Find(context.TODO(), bson.M{"isAvailable": true})
+
+	if err != nil {
+		log.Printf("Error while getting all hostels because of %v", err)
+		return nil, err
+	}
+
+	for cursor.Next(context.TODO()) {
+		var hostel Hostel
+		cursor.Decode(&hostel)
+		availableHostels = append(availableHostels, hostel)
+	}
+
+	return availableHostels, nil
+}
+
+func getHostelByID(hostelID string) (*Hostel, error) {
 	hostel := Hostel{}
-	err := collection.FindOne(context.TODO(), bson.M{"id": hostelId}).Decode(&hostel)
+	err := collection.FindOne(context.TODO(), bson.M{"id": hostelID}).Decode(&hostel)
 	if err != nil {
 		log.Printf("Error while getting a hostel becase of %v", err)
 		return nil, err
@@ -64,13 +82,38 @@ func createHostel(hostel Hostel) error {
 	return nil
 }
 
-func checkIfHostelExists(name string) bool {
+func checkIfDuplicate(name string) bool {
 	var existed Hostel
-	doc := collection.FindOne(context.TODO(), bson.M{"name": name})
-	doc.Decode(&existed)
+	collection.FindOne(context.TODO(), bson.M{"name": name}).Decode(&existed)
 
 	if existed != (Hostel{}) {
+		return true
+	}
+	return false
+}
 
+func BookHostel(hostelID string) error {
+	booked := bson.M{
+		"$set": bson.M{
+			"isAvaliable": false,
+		},
+	}
+
+	_, err := collection.UpdateOne(context.TODO(), bson.M{"id": hostelID}, booked)
+
+	if err != nil {
+		log.Printf("Error while booking a hostel because of %v", err)
+		return err
+	}
+
+	return nil
+}
+
+func CheckIfAvaliable(hostelID string) bool {
+	var hostel Hostel
+	collection.FindOne(context.TODO(), bson.M{"id": hostelID}).Decode(&hostel)
+
+	if hostel != (Hostel{}) && hostel.IsAvailable {
 		return true
 	}
 	return false

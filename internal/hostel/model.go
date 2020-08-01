@@ -6,6 +6,7 @@ type Hostel struct {
 	Name        string  `json:"name"`
 	Price       float32 `json:"price"`
 	Detail      string  `json:"detai"`
+	IsAvailable bool    `json:"available"`
 	Geolocation Map     `json:"geolocation"`
 }
 
