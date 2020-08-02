@@ -43,6 +43,6 @@ func noRoute(c *gin.Context) {
 
 func emptyRoute(c *gin.Context) {
 	c.JSON(200, gin.H{
-		"message": "Welcome to the Application",
+		"message": "Welcome to the Application.",
 	})
 }
