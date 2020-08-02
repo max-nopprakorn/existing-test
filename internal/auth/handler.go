@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// LoginHandler will handle when user logging in
 func LoginHandler(c *gin.Context) {
 	loginFrom := LoginRequest{}
 	err := c.ShouldBindJSON(&loginFrom)
@@ -33,6 +34,7 @@ func LoginHandler(c *gin.Context) {
 	})
 }
 
+// RegisterHandler will handle when user registration
 func RegisterHandler(c *gin.Context) {
 	user := userHelper.User{}
 	err := c.ShouldBindJSON(&user)

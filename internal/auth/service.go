@@ -2,9 +2,7 @@ package auth
 
 import (
 	"context"
-	"fmt"
 	"log"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
@@ -13,51 +11,20 @@ import (
 
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/existing-test/helper"
 	userHelper "github.com/existing-test/internal/user"
 )
 
 var userCollection *mongo.Collection
 
+// UserCollection is the database connecion for user collection
 func UserCollection(c *mongo.Database) {
 	userCollection = c.Collection("user")
 }
 
-func createToken(userID string) (string, error) {
-	fmt.Println(userID)
-	fmt.Println("||||||||||||||||||||||||||||||||")
-	claims := jwt.MapClaims{}
-	claims["authorized"] = true
-	claims["userId"] = userID
-	claims["exp"] = time.Now().Add(time.Minute * 15).Unix()
-	at := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err := at.SignedString([]byte("SECRET_KEY"))
-	if err != nil {
-		return "", err
-	}
-	return token, nil
-}
-
-func GetUserIdFromToken(tokenString string) (string, error) {
-	claims := jwt.MapClaims{}
-	_, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte("SECRET_KEY"), nil
-	})
-
-	if err != nil {
-		log.Printf("Error while extracting token, because of %v", err)
-		return "", err
-	}
-
-	userID := claims["userId"].(string)
-
-	return userID, nil
-}
-
 func login(req LoginRequest) (string, error) {
 	user, _ := userHelper.GetUserByUsername(req.Username)
-	fmt.Println(user)
-	token, err := createToken(user.ID.String())
+	token, err := helper.CreateToken(user.ID.Hex())
 	if err != nil {
 		log.Printf("Error while creating a token.")
 		return "", err

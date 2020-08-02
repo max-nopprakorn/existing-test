@@ -2,6 +2,7 @@ package hostel
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -55,7 +56,10 @@ func getAvailableHostels() ([]Hostel, error) {
 
 func getHostelByID(hostelID string) (*Hostel, error) {
 	hostel := Hostel{}
-	err := collection.FindOne(context.TODO(), bson.M{"_id": hostelID}).Decode(&hostel)
+	hostelObjectID := transformToObjectID(hostelID)
+	fmt.Println("HOSTEL OBJECT ID :")
+	fmt.Println(hostelObjectID)
+	err := collection.FindOne(context.TODO(), bson.M{"_id": hostelObjectID}).Decode(&hostel)
 	if err != nil {
 		log.Printf("Error while getting a hostel becase of %v", err)
 		return nil, err
@@ -107,8 +111,8 @@ func BookHostel(hostelID string) error {
 			"isAvaliable": false,
 		},
 	}
-
-	_, err := collection.UpdateOne(context.TODO(), bson.M{"_id": hostelID}, booked)
+	hostelObjectID := transformToObjectID(hostelID)
+	_, err := collection.UpdateOne(context.TODO(), bson.M{"_id": hostelObjectID}, booked)
 
 	if err != nil {
 		log.Printf("Error while booking a hostel because of %v", err)
@@ -121,10 +125,17 @@ func BookHostel(hostelID string) error {
 // CheckIfAvaliable will check if hostel is available or not
 func CheckIfAvaliable(hostelID string) bool {
 	var hostel Hostel
-	collection.FindOne(context.TODO(), bson.M{"_id": hostelID}).Decode(&hostel)
-
+	hostelObjectID := transformToObjectID(hostelID)
+	fmt.Println("HOSTEL OBJECT ID :")
+	fmt.Println(hostelObjectID)
+	collection.FindOne(context.TODO(), bson.M{"_id": hostelObjectID}).Decode(&hostel)
 	if hostel != (Hostel{}) && hostel.IsAvailable {
 		return true
 	}
 	return false
+}
+
+func transformToObjectID(id string) primitive.ObjectID {
+	objectID, _ := primitive.ObjectIDFromHex(id)
+	return objectID
 }

@@ -1,13 +1,14 @@
 package user
 
 import (
+	"github.com/existing-test/helper"
 	"github.com/existing-test/internal/hostel"
 	"github.com/gin-gonic/gin"
 )
 
 // GetUserDetailHandler will return the user information
 func GetUserDetailHandler(c *gin.Context) {
-	userID := c.Param("userId")
+	userID := helper.GetUserIdFromToken(c)
 	user, err := getUserDetail(userID)
 	if err != nil {
 		c.AbortWithStatusJSON(500, gin.H{
@@ -27,7 +28,7 @@ func GetUserDetailHandler(c *gin.Context) {
 
 // BookHostelHandler will handle when user book a hostel
 func BookHostelHandler(c *gin.Context) {
-	userID := c.Param("userId")
+	userID := helper.GetUserIdFromToken(c)
 	hostelID := c.Param("hostelId")
 	isAvailable := hostel.CheckIfAvaliable(hostelID)
 	if !isAvailable {
@@ -50,7 +51,7 @@ func BookHostelHandler(c *gin.Context) {
 
 // GetBookingsHandler will return user's bookings
 func GetBookingsHandler(c *gin.Context) {
-	userID := c.Param("userId")
+	userID := helper.GetUserIdFromToken(c)
 	bookings, err := getBookings(userID)
 	if err != nil {
 		c.AbortWithStatusJSON(500, gin.H{

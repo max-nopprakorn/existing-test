@@ -5,8 +5,9 @@ import (
 	"log"
 
 	"github.com/existing-test/internal/hostel"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"gopkg.in/mgo.v2/bson"
 )
 
 var userColleciton *mongo.Collection
@@ -24,7 +25,12 @@ func BookingCollection(c *mongo.Database) {
 
 func getUserDetail(userID string) (*UserWithoutPassword, error) {
 	user := User{}
-	err := userColleciton.FindOne(context.TODO(), bson.M{"_id": userID}).Decode(&user)
+	userObjectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		log.Printf("Error while transfrom string to objectId")
+		return nil, err
+	}
+	err = userColleciton.FindOne(context.TODO(), bson.M{"_id": userObjectID}).Decode(&user)
 	if err != nil {
 		log.Printf("Error while getting a user because of %v", err)
 		return nil, err
@@ -72,7 +78,8 @@ func getBookings(userID string) ([]Booking, error) {
 
 func getBookingDetail(bookingID string) (*Booking, error) {
 	booking := Booking{}
-	err := bookingCollection.FindOne(context.TODO(), bson.M{"_id": bookingID}).Decode(&booking)
+	bookingObjectID := transformToObjectID(bookingID)
+	err := bookingCollection.FindOne(context.TODO(), bson.M{"_id": bookingObjectID}).Decode(&booking)
 	if err != nil {
 		log.Printf("Error while getting a booking information.")
 		return nil, err
@@ -89,4 +96,9 @@ func GetUserByUsername(username string) (*UserWithoutPassword, error) {
 		return nil, err
 	}
 	return user.removeUserPassword(), nil
+}
+
+func transformToObjectID(id string) primitive.ObjectID {
+	objectID, _ := primitive.ObjectIDFromHex(id)
+	return objectID
 }
