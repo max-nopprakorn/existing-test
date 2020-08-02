@@ -1,1 +1,1 @@
-web: bin/existing-test
+web: existing-test
