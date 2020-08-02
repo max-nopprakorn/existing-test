@@ -17,6 +17,7 @@ require (
 	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de
 	golang.org/x/sys v0.0.0-20200802091954-4b90ce9b60b3 // indirect
 	golang.org/x/tools v0.0.0-20200731060945-b5fad4ed8dd6 // indirect
+	google.golang.org/appengine v1.6.6
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
 	gopkg.in/yaml.v2 v2.3.0 // indirect

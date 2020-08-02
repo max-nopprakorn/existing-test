@@ -1,11 +1,10 @@
 package main
 
 import (
-	"log"
-
 	"github.com/existing-test/config"
 	"github.com/existing-test/routes"
 	"github.com/gin-gonic/gin"
+	"google.golang.org/appengine"
 )
 
 func main() {
@@ -17,6 +16,6 @@ func main() {
 
 	// Route Handlers / Endpoints
 	routes.Routes(router)
-
-	log.Fatal(router.Run(":8090"))
+	appengine.Main()
+	// log.Fatal(router.Run(":8090"))
 }
