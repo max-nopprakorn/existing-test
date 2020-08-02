@@ -1,4 +1,6 @@
-runtime: go113
+runtime: go
+api_version: go1
+env: standard
 handlers:
-    - url: /.*
-      script: auto 
+- url: /.*
+  script: _go_app
