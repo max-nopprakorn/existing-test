@@ -4,7 +4,8 @@ import (
 	"context"
 	"log"
 
-	"github.com/google/uuid"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -54,7 +55,7 @@ func getAvailableHostels() ([]Hostel, error) {
 
 func getHostelByID(hostelID string) (*Hostel, error) {
 	hostel := Hostel{}
-	err := collection.FindOne(context.TODO(), bson.M{"id": hostelID}).Decode(&hostel)
+	err := collection.FindOne(context.TODO(), bson.M{"_id": hostelID}).Decode(&hostel)
 	if err != nil {
 		log.Printf("Error while getting a hostel becase of %v", err)
 		return nil, err
@@ -66,10 +67,17 @@ func getHostelByID(hostelID string) (*Hostel, error) {
 func createHostel(hostel Hostel) error {
 
 	name := hostel.Name
+	detail := hostel.Detail
+	price := hostel.Price
+	geolocation := hostel.Geolocation
 
 	newHostel := Hostel{
-		ID:   uuid.New().String(),
-		Name: name,
+		ID:          primitive.NewObjectID(),
+		Name:        name,
+		Detail:      detail,
+		Price:       price,
+		Geolocation: geolocation,
+		IsAvailable: true,
 	}
 
 	_, err := collection.InsertOne(context.TODO(), newHostel)
@@ -100,7 +108,7 @@ func BookHostel(hostelID string) error {
 		},
 	}
 
-	_, err := collection.UpdateOne(context.TODO(), bson.M{"id": hostelID}, booked)
+	_, err := collection.UpdateOne(context.TODO(), bson.M{"_id": hostelID}, booked)
 
 	if err != nil {
 		log.Printf("Error while booking a hostel because of %v", err)
@@ -113,7 +121,7 @@ func BookHostel(hostelID string) error {
 // CheckIfAvaliable will check if hostel is available or not
 func CheckIfAvaliable(hostelID string) bool {
 	var hostel Hostel
-	collection.FindOne(context.TODO(), bson.M{"id": hostelID}).Decode(&hostel)
+	collection.FindOne(context.TODO(), bson.M{"_id": hostelID}).Decode(&hostel)
 
 	if hostel != (Hostel{}) && hostel.IsAvailable {
 		return true

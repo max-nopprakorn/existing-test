@@ -3,12 +3,12 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 
+	authHandler "github.com/existing-test/internal/auth"
 	hostelHanlder "github.com/existing-test/internal/hostel"
 	userHandler "github.com/existing-test/internal/user"
 )
 
 func Routes(router *gin.Engine) {
-	// router = gin.Default()
 
 	hostel := router.Group("/hostels")
 	{
@@ -26,8 +26,8 @@ func Routes(router *gin.Engine) {
 
 	router.POST("/book", userHandler.BookHostelHandler)
 
-	// router.POST("/register", authHandler.Register)
-	// router.POST("/login", authHandler.Login)
+	router.POST("/register", authHandler.RegisterHandler)
+	router.POST("/login", authHandler.LoginHandler)
 	router.NoRoute(noRoute)
 
 }

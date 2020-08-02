@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/existing-test/internal/auth"
 	"github.com/existing-test/internal/hostel"
 	"github.com/existing-test/internal/user"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -35,4 +36,5 @@ func Connect() {
 	hostel.Collection(db)
 	user.UserCollection(db)
 	user.BookingCollection(db)
+	auth.UserCollection(db)
 }

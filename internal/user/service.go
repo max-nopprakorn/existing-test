@@ -22,15 +22,15 @@ func BookingCollection(c *mongo.Database) {
 	bookingCollection = c.Collection("booking")
 }
 
-func getUserDetail(userID string) (*User, error) {
+func getUserDetail(userID string) (*UserWithoutPassword, error) {
 	user := User{}
-	err := userColleciton.FindOne(context.TODO(), bson.M{"id": userID}).Decode(&user)
+	err := userColleciton.FindOne(context.TODO(), bson.M{"_id": userID}).Decode(&user)
 	if err != nil {
 		log.Printf("Error while getting a user because of %v", err)
 		return nil, err
 	}
 
-	return &user, nil
+	return user.removeUserPassword(), nil
 }
 
 func bookHostel(userID string, hostelID string) error {
@@ -72,10 +72,21 @@ func getBookings(userID string) ([]Booking, error) {
 
 func getBookingDetail(bookingID string) (*Booking, error) {
 	booking := Booking{}
-	err := bookingCollection.FindOne(context.TODO(), bson.M{"id": bookingID}).Decode(&booking)
+	err := bookingCollection.FindOne(context.TODO(), bson.M{"_id": bookingID}).Decode(&booking)
 	if err != nil {
 		log.Printf("Error while getting a booking information.")
 		return nil, err
 	}
-	return &booking, err
+	return &booking, nil
+}
+
+// GetUserByUsername will query a user by username
+func GetUserByUsername(username string) (*UserWithoutPassword, error) {
+	user := User{}
+	err := userColleciton.FindOne(context.TODO(), bson.M{"username": username}).Decode(&user)
+	if err != nil {
+		log.Printf("Error while getting a user by username.")
+		return nil, err
+	}
+	return user.removeUserPassword(), nil
 }

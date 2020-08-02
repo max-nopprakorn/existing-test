@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+
 	config.Connect()
 
 	// Init Router

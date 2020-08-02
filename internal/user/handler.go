@@ -15,7 +15,7 @@ func GetUserDetailHandler(c *gin.Context) {
 		})
 		return
 	}
-	if user == (&User{}) {
+	if user == (&UserWithoutPassword{}) {
 		c.AbortWithStatusJSON(404, gin.H{
 			"message": "Resource not found.",
 		})
