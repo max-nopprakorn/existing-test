@@ -11,6 +11,7 @@ import (
 
 // Routes will handle every routing for this application
 func Routes(router *gin.Engine) {
+	router.GET("/", emptyRoute)
 
 	hostel := router.Group("/hostels")
 	hostel.Use(helper.JWTAuthMiddleware())
@@ -37,5 +38,11 @@ func Routes(router *gin.Engine) {
 func noRoute(c *gin.Context) {
 	c.AbortWithStatusJSON(404, gin.H{
 		"message": "Path not found.",
+	})
+}
+
+func emptyRoute(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"message": "Welcome to the Application",
 	})
 }
