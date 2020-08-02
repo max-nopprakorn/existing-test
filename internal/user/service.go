@@ -41,6 +41,7 @@ func getUserDetail(userID string) (*UserWithoutPassword, error) {
 
 func bookHostel(userID string, hostelID string) error {
 	booking := Booking{
+		ID:       primitive.NewObjectID(),
 		HostelID: hostelID,
 		UserID:   userID,
 	}
