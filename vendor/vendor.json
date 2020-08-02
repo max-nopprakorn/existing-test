@@ -1,0 +1,10 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [],
+	"rootPath": "github.com/existing-test",
+	"heroku": {
+        "install" : [ "./..." ],
+        "goVersion": "go1.14.6"
+    }
+}
