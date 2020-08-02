@@ -54,7 +54,7 @@ func getAvailableHostels() ([]Hostel, error) {
 	return availableHostels, nil
 }
 
-func getHostelByID(hostelID string) (*Hostel, error) {
+func GetHostelByID(hostelID string) (*Hostel, error) {
 	hostel := Hostel{}
 	hostelObjectID := transformToObjectID(hostelID)
 	fmt.Println("HOSTEL OBJECT ID :")

@@ -25,7 +25,7 @@ func Routes(router *gin.Engine) {
 		user.GET("/", userHandler.GetUserDetailHandler)
 		user.GET("/bookings", userHandler.GetBookingsHandler)
 		user.GET("/bookings/:bookingId", userHandler.GetBookingDetailHandler)
-		user.POST("/book/:hostelId", userHandler.BookHostelHandler)
+		user.POST("/book", userHandler.BookHostelHandler)
 	}
 
 	router.POST("/register", authHandler.RegisterHandler)

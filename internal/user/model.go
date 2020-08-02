@@ -36,16 +36,16 @@ func (user User) removeUserPassword() *UserWithoutPassword {
 // Booking stores booking information
 type Booking struct {
 	ID       primitive.ObjectID `json:"id" bson:"_id"`
-	UserID   string             `json:"userId"`
-	HostelID string             `json:"hostelId"`
-	Date     string             `json:"date"`
+	UserID   string             `json:"userId" bson:"userId"`
+	HostelID string             `json:"hostelId" bson:"hostelId"`
+	Date     string             `json:"date" bson:"date"`
 }
 
 // BookingDetail represents the booking information for user
 type BookingDetail struct {
-	BookingID  string `json:"bookingId"`
-	HostelID   string `json:"hostelId"`
-	HostelName string `json:"hostelName"`
-	Date       string `json:"date"`
-	Price      string `json:"price"`
+	BookingID  string  `json:"bookingId"`
+	HostelID   string  `json:"hostelId"`
+	HostelName string  `json:"hostelName"`
+	Date       string  `json:"date"`
+	Price      float32 `json:"price"`
 }

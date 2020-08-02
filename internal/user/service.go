@@ -39,13 +39,14 @@ func getUserDetail(userID string) (*UserWithoutPassword, error) {
 	return user.removeUserPassword(), nil
 }
 
-func bookHostel(userID string, hostelID string) error {
+func bookHostel(userID string, bookingReq Booking) error {
 	booking := Booking{
 		ID:       primitive.NewObjectID(),
-		HostelID: hostelID,
+		HostelID: bookingReq.HostelID,
 		UserID:   userID,
+		Date:     bookingReq.Date,
 	}
-	err := hostel.BookHostel(hostelID)
+	err := hostel.BookHostel(booking.HostelID)
 	if err != nil {
 		log.Printf("Error while booking a hostel, because of %v", err)
 		return err
@@ -59,8 +60,9 @@ func bookHostel(userID string, hostelID string) error {
 	return nil
 }
 
-func getBookings(userID string) ([]Booking, error) {
+func getBookings(userID string) ([]BookingDetail, error) {
 	bookings := []Booking{}
+	bookingsDetail := []BookingDetail{}
 	cursor, err := bookingCollection.Find(context.TODO(), bson.M{"userId": userID})
 
 	if err != nil {
@@ -74,10 +76,22 @@ func getBookings(userID string) ([]Booking, error) {
 		bookings = append(bookings, booking)
 	}
 
-	return bookings, nil
+	for _, b := range bookings {
+		hostel, _ := hostel.GetHostelByID(b.HostelID)
+		bookingDetail := BookingDetail{
+			BookingID:  b.ID.Hex(),
+			HostelID:   hostel.ID.Hex(),
+			Price:      hostel.Price,
+			HostelName: hostel.Name,
+			Date:       b.Date,
+		}
+		bookingsDetail = append(bookingsDetail, bookingDetail)
+	}
+
+	return bookingsDetail, nil
 }
 
-func getBookingDetail(bookingID string) (*Booking, error) {
+func getBookingDetail(bookingID string) (*BookingDetail, error) {
 	booking := Booking{}
 	bookingObjectID := transformToObjectID(bookingID)
 	err := bookingCollection.FindOne(context.TODO(), bson.M{"_id": bookingObjectID}).Decode(&booking)
@@ -85,7 +99,15 @@ func getBookingDetail(bookingID string) (*Booking, error) {
 		log.Printf("Error while getting a booking information.")
 		return nil, err
 	}
-	return &booking, nil
+	hostel, _ := hostel.GetHostelByID(booking.HostelID)
+	bookingDetail := BookingDetail{
+		BookingID:  booking.ID.Hex(),
+		HostelID:   hostel.ID.Hex(),
+		Price:      hostel.Price,
+		HostelName: hostel.Name,
+		Date:       booking.Date,
+	}
+	return &bookingDetail, nil
 }
 
 // GetUserByUsername will query a user by username

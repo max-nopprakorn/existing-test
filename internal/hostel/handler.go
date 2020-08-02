@@ -20,7 +20,7 @@ func GetHostelsHandler(c *gin.Context) {
 // GetHostelByIDHandler is the handler for query a hostel by id.
 func GetHostelByIDHandler(c *gin.Context) {
 	hostelID := c.Param("hostelId")
-	hostel, err := getHostelByID(hostelID)
+	hostel, err := GetHostelByID(hostelID)
 	if err != nil {
 		c.AbortWithStatusJSON(500, gin.H{
 			"message": "Something went wrong when trying to query a hostel.",

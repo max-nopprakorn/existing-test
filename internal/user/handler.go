@@ -29,15 +29,21 @@ func GetUserDetailHandler(c *gin.Context) {
 // BookHostelHandler will handle when user book a hostel
 func BookHostelHandler(c *gin.Context) {
 	userID := helper.GetUserIdFromToken(c)
-	hostelID := c.Param("hostelId")
-	isAvailable := hostel.CheckIfAvaliable(hostelID)
+	booking := Booking{}
+	err := c.ShouldBindJSON(&booking)
+	if err != nil {
+		c.AbortWithStatusJSON(400, gin.H{
+			"message": "Invalid json request.",
+		})
+	}
+	isAvailable := hostel.CheckIfAvaliable(booking.HostelID)
 	if !isAvailable {
 		c.AbortWithStatusJSON(409, gin.H{
 			"message": "This hostel is not available.",
 		})
 		return
 	}
-	err := bookHostel(userID, hostelID)
+	err = bookHostel(userID, booking)
 	if err != nil {
 		c.AbortWithStatusJSON(500, gin.H{
 			"message": "Something went wrong when trying to book a hostel.",
