@@ -5,6 +5,6 @@
 	"rootPath": "github.com/existing-test",
 	"heroku": {
         "install" : [ "./..." ],
-        "goVersion": "go1.13"
+        "goVersion": "go1.11"
     }
 }
