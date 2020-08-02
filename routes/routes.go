@@ -9,6 +9,7 @@ import (
 	userHandler "github.com/existing-test/internal/user"
 )
 
+// Routes will handle every routing for this application
 func Routes(router *gin.Engine) {
 
 	hostel := router.Group("/hostels")

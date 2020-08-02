@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// CreateToken will generate token from user id
 func CreateToken(userID string) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
@@ -21,7 +22,8 @@ func CreateToken(userID string) (string, error) {
 	return token, nil
 }
 
-func GetUserIdFromToken(c *gin.Context) string {
+// GetUserIDFromToken will extract token and return user id
+func GetUserIDFromToken(c *gin.Context) string {
 	tokenString := c.Request.Header.Get("X-Auth-Token")
 	claims := jwt.MapClaims{}
 	jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {

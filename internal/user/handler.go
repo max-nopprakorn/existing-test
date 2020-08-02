@@ -8,7 +8,7 @@ import (
 
 // GetUserDetailHandler will return the user information
 func GetUserDetailHandler(c *gin.Context) {
-	userID := helper.GetUserIdFromToken(c)
+	userID := helper.GetUserIDFromToken(c)
 	user, err := getUserDetail(userID)
 	if err != nil {
 		c.AbortWithStatusJSON(500, gin.H{
@@ -28,7 +28,7 @@ func GetUserDetailHandler(c *gin.Context) {
 
 // BookHostelHandler will handle when user book a hostel
 func BookHostelHandler(c *gin.Context) {
-	userID := helper.GetUserIdFromToken(c)
+	userID := helper.GetUserIDFromToken(c)
 	booking := Booking{}
 	err := c.ShouldBindJSON(&booking)
 	if err != nil {
@@ -57,7 +57,7 @@ func BookHostelHandler(c *gin.Context) {
 
 // GetBookingsHandler will return user's bookings
 func GetBookingsHandler(c *gin.Context) {
-	userID := helper.GetUserIdFromToken(c)
+	userID := helper.GetUserIDFromToken(c)
 	bookings, err := getBookings(userID)
 	if err != nil {
 		c.AbortWithStatusJSON(500, gin.H{
