@@ -54,7 +54,7 @@ func getAvailableHostels() ([]Hostel, error) {
 	return availableHostels, nil
 }
 
-// GetHostelById will query a hostel by its id and return
+// GetHostelByID will query a hostel by its id and return
 func GetHostelByID(hostelID string) (*Hostel, error) {
 	hostel := Hostel{}
 	hostelObjectID := transformToObjectID(hostelID)

@@ -1,20 +1,36 @@
 package hostel
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 )
 
 // GetHostelsHandler is the handler for query all hostels.
 func GetHostelsHandler(c *gin.Context) {
-	hostels, err := getHostels()
-	if err != nil {
-		c.AbortWithStatusJSON(500, gin.H{
-			"mesaage": "Something went wrong when trying to query all hostels.",
-		})
-		return
-	}
+	onlyAvailableQuery := c.Query("onlyAvailable")
+	onlyAvailable, _ := strconv.ParseBool(onlyAvailableQuery)
+	if onlyAvailable {
+		availableHostels, err := getAvailableHostels()
+		if err != nil {
+			c.AbortWithStatusJSON(500, gin.H{
+				"mesaage": "Something went wrong when trying to query available hostels.",
+			})
+			return
+		}
 
-	c.JSON(200, hostels)
+		c.JSON(200, availableHostels)
+	} else {
+		hostels, err := getHostels()
+		if err != nil {
+			c.AbortWithStatusJSON(500, gin.H{
+				"mesaage": "Something went wrong when trying to query all hostels.",
+			})
+			return
+		}
+
+		c.JSON(200, hostels)
+	}
 }
 
 // GetHostelByIDHandler is the handler for query a hostel by id.
@@ -71,17 +87,4 @@ func CreateHostelHandler(c *gin.Context) {
 	c.JSON(201, gin.H{
 		"message": "Create hostel successfully.",
 	})
-}
-
-// GetAvailableHostelsHandler will return only available hostels.
-func GetAvailableHostelsHandler(c *gin.Context) {
-	availableHostels, err := getAvailableHostels()
-	if err != nil {
-		c.AbortWithStatusJSON(500, gin.H{
-			"mesaage": "Something went wrong when trying to query available hostels.",
-		})
-		return
-	}
-
-	c.JSON(200, availableHostels)
 }
